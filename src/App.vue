@@ -1,97 +1,103 @@
 <template>
-  <div id="main-app" class="container">
-    <div class="row justify-content-center">
-      <add-appointment @add="addItem"/>
+  <div id="main-app" class="container mt-5">
+    <div class="row gy-4 justify-content-center">
+      <h1 class="col-12 col-md-10 col-lg-7 text-center pb-4">
+        Veterinary Appointments
+      </h1>
       <search-appointments
+        class="col-12 col-md-10 col-lg-7"
         @searchRecords="searchAppointments"
         :myKey="filterKey"
         :myDir="filterDir"
-        @requestKey="changeKey"
-        @requestDir="changeDir"
+        @reqKey="setKey"
+        @reqDir="setDir"
       />
-      <appointment-list :appointments="filteredApts" @remove="removeItem" @edit="editItem"/>
+      <add-appointment class="col-12 col-md-10 col-lg-7" @add="addApt" />
+      <appointment-list
+        class="col-12 col-md-10 col-lg-7"
+        :appointments="filteredApts"
+        @remove="removeApt"
+        @edit="editApt"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import AddAppointment from "./components/AddAppointment";
-import SearchAppointments from "./components/SearchAppointments";
-import AppointmentList from "./components/AppointmentList";
-import _ from "lodash";
-import axios from "axios";
-
+import AddAppointment from './components/AddAppointment'
+import AppointmentList from './components/AppointmentList'
+import SearchAppointments from './components/SearchAppointments'
+import _ from 'lodash'
+import axios from 'axios'
 export default {
-  name: "MainApp",
-  data: function() {
+  name: 'MainApp',
+  data: function () {
     return {
       appointments: [],
-      filterKey: "petName",
-      filterDir: "asc",
-      searchTerms: "",
-      aptIndex: 0
-    };
+      searchTerms: '',
+      filterKey: 'petName',
+      filterDir: 'asc',
+      aptIndex: 0,
+    }
   },
-  components: {
-    AppointmentList,
-    SearchAppointments,
-    AddAppointment
-  },
+
   mounted() {
-    axios.get("./data/appointments.json").then(
-      response =>
-        (this.appointments = response.data.map(item => {
-          item.aptId = this.aptIndex;
-          this.aptIndex++;
-          return item;
+    axios.get('./data/appointments.json').then(
+      (response) =>
+        (this.appointments = response.data.map((item) => {
+          item.id = this.aptIndex
+          this.aptIndex++
+          return item
         }))
-    );
+    )
   },
   computed: {
-    searchedApts: function() {
-      return this.appointments.filter(item => {
+    searchApts: function () {
+      return this.appointments.filter((item) => {
         return (
           item.petName.toLowerCase().match(this.searchTerms.toLowerCase()) ||
-          item.petOwner.toLowerCase().match(this.searchTerms.toLowerCase()) ||
+          item.ownerName.toLowerCase().match(this.searchTerms.toLowerCase()) ||
           item.aptNotes.toLowerCase().match(this.searchTerms.toLowerCase())
-        );
-      });
+        )
+      })
     },
-    filteredApts: function() {
+    filteredApts: function () {
       return _.orderBy(
-        this.searchedApts,
-        item => {
-          return item[this.filterKey].toLowerCase();
+        this.searchApts,
+        (item) => {
+          return item[this.filterKey].toLowerCase()
         },
         this.filterDir
-      );
-    }
+      )
+    },
   },
   methods: {
-    changeKey: function(value) {
-      this.filterKey = value;
+    searchAppointments: function (terms) {
+      this.searchTerms = terms
     },
-    changeDir: function(value) {
-      this.filterDir = value;
+    setKey(key) {
+      this.filterKey = key
     },
-    searchAppointments: function(terms) {
-      this.searchTerms = terms;
+    setDir(dir) {
+      this.filterDir = dir
     },
-    addItem: function(apt) {
-      apt.aptId = this.aptIndex;
-      this.aptIndex++;
-      this.appointments.push(apt);
+    addApt: function (apt) {
+      apt.id = this.aptIndex
+      this.aptIndex++
+      this.appointments.push(apt)
     },
-    removeItem: function(apt) {
-      this.appointments = _.without(this.appointments, apt);
+    removeApt: function (apt) {
+      this.appointments = _.without(this.appointments, apt)
     },
-    editItem: function(id, field, text) {
-      const aptIndex = _.findIndex(this.appointments, {
-        aptId: id
-      });
-      this.appointments[aptIndex][field] = text;
-    }
-  }
-};
+    editApt: function (id, field, text) {
+      const aptIndex = _.findIndex(this.appointments, { id: id })
+      this.appointments[aptIndex][field] = text
+    },
+  },
+  components: {
+    AddAppointment,
+    AppointmentList,
+    SearchAppointments,
+  },
+}
 </script>
-

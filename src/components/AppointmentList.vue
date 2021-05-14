@@ -1,54 +1,57 @@
 <template>
-  <div class="col-12 col-md-10 col-lg-7">
-    <div class="list-group list-group-flush">
-      <div
-        class="list-group-item d-flex align-items-start"
-        v-for="item in appointments"
-        :key="item.aptIndex"
-      >
-        <button class="mr-2 btn btn-sm btn-danger" @click="$emit('remove', item)">
-          <font-awesome-icon icon="trash"/>
+  <div class="appointment-list">
+    <div
+      class="card shadow-sm mb-3"
+      v-for="item in appointments"
+      :key="item.id"
+    >
+      <div class="card-header d-flex justify-content-between">
+        <span
+          class="h4 card-title fw-bold m-0"
+          contenteditable="contenteditable"
+          @blur="$emit('edit', item.id, 'petName', $event.target.innerText)"
+          >{{ item.petName }}</span
+        >
+        <button
+          class="btn btn-sm btn-outline-danger"
+          @click="$emit('remove', item)"
+        >
+          <font-awesome-icon icon="trash" />
         </button>
-        <div class="w-100">
-          <div class="d-flex justify-content-between">
-            <span
-              class="h4 text-primary"
-              contenteditable="contenteditable"
-              @blur="$emit('edit', item.aptId, 'petName', $event.target.innerText)"
-            >{{item.petName}}</span>
-            <span class="float-right">{{formattedDate(item.aptDate)}}</span>
-          </div>
-          <div class="owner-name">
-            <span class="font-weight-bold text-primary mr-1">Owner:</span>
-            <span
-              contenteditable="contenteditable"
-              @blur="$emit('edit', item.aptId, 'petOwner', $event.target.innerText)"
-            >{{item.petOwner}}</span>
-          </div>
-          <div
+      </div>
+      <div class="card-body">
+        <div class="owner-name">
+          <span class="font-weight-bold fw-bold">Owner: </span>
+          <span
             contenteditable="contenteditable"
-            @blur="$emit('edit', item.aptId, 'aptNotes', $event.target.innerText)"
-          >{{item.aptNotes}}</div>
+            @blur="$emit('edit', item.id, 'petOwner', $event.target.innerText)"
+            >{{ item.ownerName }}</span
+          >
         </div>
+        <div
+          contenteditable="contenteditable"
+          @blur="$emit('edit', item.id, 'aptNotes', $event.target.innerText)"
+        >
+          {{ item.aptNotes }}
+        </div>
+      </div>
+      <div class="card-footer">
+        <span>{{ formatDate(item.aptDate) }}</span>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import moment from "moment";
+import moment from 'moment'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 export default {
-  name: "AppointmentList",
-  props: ["appointments"],
-  components: {
-    FontAwesomeIcon
-  },
+  name: 'AppointmentList',
+  components: { FontAwesomeIcon },
+  props: ['appointments'],
   methods: {
-    formattedDate: function(date) {
-      return moment(new Date(date)).format("MM-DD-YY, h:mm a");
-    }
-  }
-};
+    formatDate: (date) => {
+      return moment(new Date(date)).format('llll')
+    },
+  },
+}
 </script>
-

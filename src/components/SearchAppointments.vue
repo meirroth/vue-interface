@@ -1,6 +1,6 @@
 <template>
-  <div class="col-12 col-md-10 col-lg-7">
-    <div class="input-group my-3">
+  <div class="search-appointments">
+    <div class="input-group">
       <input
         id="SearchApts"
         placeholder="Search"
@@ -8,95 +8,74 @@
         class="form-control"
         aria-label="Search Appointments"
         v-model="searchTerm"
+      />
+      <button
+        class="btn btn-primary dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
       >
-
-      <div class="input-group-append">
-        <button
-          type="button"
-          class="btn btn-primary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
+        Sort by
+      </button>
+      <div class="dropdown-menu dropdown-menu-end">
+        <a
+          id="petName"
+          class="dropdown-item"
+          :class="{ active: myKey == 'petName' }"
+          @click="$emit('reqKey', 'petName')"
+          href="#"
+          >Pet Name</a
         >
-          Sort by
-          <span class="caret"></span>
-        </button>
-
-        <div class="dropdown-menu dropdown-menu-right">
-          <a
-            href="#"
-            class="dropdown-item d-flex justify-content-between"
-            id="petName"
-            @click="$emit('requestKey', 'petName')"
-          >
-            Pet Name
-            <font-awesome-icon icon="check" v-if="myKey==='petName'"/>
-          </a>
-
-          <a
-            class="dropdown-item d-flex justify-content-between"
-            href="#"
-            id="aptDate"
-            @click="$emit('requestKey', 'aptDate')"
-          >
-            Date
-            <font-awesome-icon icon="check" v-if="myKey==='aptDate'"/>
-          </a>
-
-          <a
-            href="#"
-            class="dropdown-item d-flex justify-content-between"
-            id="ownerName"
-            @click="$emit('requestKey', 'petOwner')"
-          >
-            Owner
-            <font-awesome-icon icon="check" v-if="myKey==='petOwner'"/>
-          </a>
-
-          <div class="dropdown-divider" role="separator"></div>
-
-          <a
-            class="dropdown-item d-flex justify-content-between"
-            href="#"
-            id="asc"
-            @click="$emit('requestDir', 'asc')"
-          >
-            Asc
-            <font-awesome-icon icon="check" v-if="myDir==='asc'"/>
-          </a>
-
-          <a
-            class="dropdown-item d-flex justify-content-between"
-            href="#"
-            id="desc"
-            @click="$emit('requestDir', 'desc')"
-          >
-            Desc
-            <font-awesome-icon icon="check" v-if="myDir==='desc'"/>
-          </a>
-        </div>
+        <a
+          id="aptDate"
+          class="dropdown-item"
+          :class="{ active: myKey == 'aptDate' }"
+          @click="$emit('reqKey', 'aptDate')"
+          href="#"
+          >Date</a
+        >
+        <a
+          id="ownerName"
+          class="dropdown-item"
+          :class="{ active: myKey == 'ownerName' }"
+          @click="$emit('reqKey', 'ownerName')"
+          href="#"
+          >Owner</a
+        >
+        <hr class="dropdown-divider" role="separator" />
+        <a
+          id="asc"
+          class="dropdown-item"
+          :class="{ active: myDir == 'asc' }"
+          @click="$emit('reqDir', 'asc')"
+          href="#"
+          >Asc</a
+        >
+        <a
+          id="desc"
+          class="dropdown-item"
+          :class="{ active: myDir == 'desc' }"
+          @click="$emit('reqDir', 'desc')"
+          href="#"
+          >Desc</a
+        >
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 export default {
-  name: "SearchAppointments",
+  name: 'SearchAppointments',
   data() {
     return {
-      searchTerm: ""
-    };
-  },
-  watch: {
-    searchTerm: function() {
-      this.$emit("searchRecords", this.searchTerm);
+      searchTerm: '',
     }
   },
-  props: ["myKey", "myDir"],
-  components: {
-    FontAwesomeIcon
-  }
-};
+  watch: {
+    searchTerm: function () {
+      this.$emit('searchRecords', this.searchTerm)
+    },
+  },
+  props: ['myKey', 'myDir'],
+}
 </script>
